@@ -14,12 +14,19 @@ for _ in range(num_registros):
         'apellidos': fake.last_name(),
         'edad': random.randint(60, 99),
         'direccion': fake.address(),
-        'email': fake.email(),
         'telefono': fake.phone_number(),
         'discapacitado': fake.boolean(),
-        'numero_seguridad_social': fake.ssn()
+        'numero_seguridad_social': fake.ssn(),
+        'soltero/viudo': fake.boolean(),
+        'Indique si vive en una residencia de mayores': fake.boolean(),
+        
     }
-    base_de_datos.append(datos)
+    if datos['discapacitado'] == True:
+        datos['Porcentaje de discapacidad'] = round(random.uniform(1,85))
+    else:
+        datos['Porcentaje de discapacidad'] = 0
+
+    # datos.add(['Porcentaje de discapacidad'])
     base_de_datos.append(datos)
 
 # Guardar la base de datos en un archivo JSON
