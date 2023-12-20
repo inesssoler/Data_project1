@@ -3,12 +3,15 @@ import random
 from faker import Faker
 import unidecode
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text 
 import psycopg2
+
 
 fake = Faker('es_ES')
 
 num_registros = 500
+
+# TABLA SOLICITUDES
 
 base_de_datos = []
 
@@ -49,24 +52,4 @@ with open('base_de_datos.json', 'w') as archivo:
 print("Base de datos generada y guardada en 'base_de_datos.json'")
 
 
-# Paso de df a SQL
-# Conectar a la base de datos 'postgres' (DB del sistema) para crear la nueva 'data_project'
-#engine = create_engine('postgresql+psycopg2://postgres:Welcome01@127.0.0.1/postgres', pool_recycle=5050)
-connection_target = psycopg2.connect(
-        host='Postgres',
-        database='postgres',
-        user='postgres',
-        password='Welcome01',
-        port=5432
-    )
-cur_target = conn_target.cursor()
-#postgres_connection = engine.connect()
-data_project = 'data_project'
-cur_target.execute('''CREATE DATABASE {data_project}''')
-#Cerrar la conexión a la BD 'postgres'
-
-#postgres_connection = engine.connect()
-#cur_target = postgres_connection.cursor()
-
-#postgres_solicitudes = 'Solicitudes'
-#dframe1 = df.to_sql(postgres_solicitudes, postgres_connection, if_exists = 'replace')
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
