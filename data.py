@@ -1,55 +1,51 @@
+#------------------------------------------------------------------------------------------------------------------------------------------
 import json
 import random
 from faker import Faker
-import unidecode
 import pandas as pd
 from sqlalchemy import create_engine, text 
 import psycopg2
-
+import unicodedata
 
 fake = Faker('es_ES')
 
 num_registros = 500
 
-# TABLA SOLICITUDES
+# Tabla generada de las solicitudes
 
 base_de_datos = []
 
-# Crear registros individualmente
+# Crea los registros de forma individual
 for _ in range(num_registros):
     datos = {
-        'Nombre': fake.name(),
+        'Nombre': fake.first_name(),
         'Apellidos': fake.last_name(),
         'Edad': random.randint(60, 99),
-        'Provincia': fake.state(),
+        'Provincia en la que reside': fake.state(),
         'Telefono': fake.phone_number(),
-        'Discapacitado': fake.boolean(),
-        'Numero de la seguridad social': fake.ssn(),
-        'Es usted soltero o viudo': fake.boolean(),
+        'Indique si presenta alguna discapacidad': fake.boolean(),
+        'Número de la seguridad social': fake.ssn(),
+        '¿Es usted soltero o viudo?': fake.boolean(),
         'Indique si vive en una residencia de mayores': fake.boolean(),
-        'Indique si viajara con acompañante': fake.boolean(),
-        'Indique si el año pasado disfruto de algun viaje': fake.boolean(),
-        'Importe de la pension': round(random.uniform(480,3000))
-        
+        'Indique si viajará con acompañante': fake.boolean(),
+        'Indique si el año pasado disfrutó de algún viaje': fake.boolean(),
+        'Importe de su pensión percibida': round(random.uniform(480,3000))
     }
-    if datos['Discapacitado'] == True:
+    if datos['Indique si presenta alguna discapacidad'] == True:
         datos['Porcentaje de discapacidad'] = round(random.uniform(1,85))
     else:
         datos['Porcentaje de discapacidad'] = 0
     
-# Añadir los registros individuales a la lista
+# Añade los registros a la lista
     base_de_datos.append(datos)
 
-# Crear un DataFrame a partir de la lista
-# Las tildes se muestran bien
+# Crea un DataFrame a partir de la lista
     df = pd.DataFrame(base_de_datos)
 
-
-# Guardar la base de datos en un archivo JSON
-with open('base_de_datos.json', 'w') as archivo:
-    json.dump(base_de_datos, archivo, indent=2)
+# Guarda la base de datos en un JSON con codificación utf-8 y ensure_ascii=False, facilitando las tildes
+with open('base_de_datos.json', 'w', encoding='utf-8') as archivo:
+    json.dump(base_de_datos, archivo, indent=2, ensure_ascii=False)
 
 print("Base de datos generada y guardada en 'base_de_datos.json'")
 
-
-#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------
