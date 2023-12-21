@@ -9,9 +9,13 @@ import psycopg2
 
 fake = Faker('es_ES')
 
+<<<<<<< Updated upstream
 num_registros = 500
 
 # TABLA SOLICITUDES
+=======
+num_registros = 100
+>>>>>>> Stashed changes
 
 base_de_datos = []
 
@@ -32,6 +36,7 @@ for _ in range(num_registros):
         'Importe de la pension': round(random.uniform(480,3000))
         
     }
+<<<<<<< Updated upstream
     if datos['Discapacitado'] == True:
         datos['Porcentaje de discapacidad'] = round(random.uniform(1,85))
     else:
@@ -44,6 +49,10 @@ for _ in range(num_registros):
 # Las tildes se muestran bien
     df = pd.DataFrame(base_de_datos)
 
+=======
+ 
+    base_de_datos.append(datos)
+>>>>>>> Stashed changes
 
 # Guardar la base de datos en un archivo JSON
 with open('base_de_datos.json', 'w') as archivo:
