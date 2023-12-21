@@ -49,7 +49,7 @@ with open('base_de_datos.json', 'w', encoding='utf-8') as archivo:
     json.dump(base_de_datos, archivo, indent=2, ensure_ascii=False)
 
 print("Base de datos generada y guardada en 'base_de_datos.json'")
-<<<<<<< HEAD
+
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 # Paso de df a SQL
@@ -90,6 +90,4 @@ postgres_connection2.execute(query3)
 
 #cur_target = postgres_connection.cursor()
 #, pool_recycle=5050
-=======
-#---------------------------------------------------------------------------------------------------------------------------------------
->>>>>>> main
+
