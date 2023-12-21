@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------
 import json
 import random
 from faker import Faker
@@ -11,7 +11,7 @@ import unicodedata
 fake = Faker('es_ES')
 
 # Cantidad de solicitantes a generar
-num_registros = 500
+num_registros = 1000
 
 # Tabla generada de las solicitudes
 base_de_datos = []
@@ -44,9 +44,9 @@ for _ in range(num_registros):
 # Crea un DataFrame a partir de la lista
     df = pd.DataFrame(base_de_datos)
 
-# Guarda la base de datos en un JSON con codificación utf-8 y ensure_ascii=False, facilitando las tildes e imprimiéndolo por pantalla
+#Guarda la base de datos en un JSON con codificación utf-8 y ensure_ascii=False, facilitando las tildes e imprimiéndolo por pantalla
 with open('base_de_datos.json', 'w', encoding='utf-8') as archivo:
     json.dump(base_de_datos, archivo, indent=2, ensure_ascii=False)
 
 print("Base de datos generada y guardada en 'base_de_datos.json'")
-#------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------
