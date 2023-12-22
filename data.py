@@ -13,7 +13,8 @@ fake = Faker('es_ES')
 # Cantidad de solicitantes a generar
 num_registros = 1000
 
-# Tabla generada de las solicitudes
+
+
 base_de_datos = []
 
 # Crea los registros de forma individual
