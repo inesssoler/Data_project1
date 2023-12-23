@@ -1,3 +1,8 @@
+-- Create esquema
+
+CREATE SCHEMA IF NOT EXISTS esquema;
+
+
 -- Table: esquema."Solicitudes"
 
 CREATE TABLE esquema."Solicitudes"
