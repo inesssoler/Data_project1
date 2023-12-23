@@ -15,6 +15,9 @@ services:
       - "5432:5432"
     networks:
       - postgres
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: unless-stopped
    
   pgadmin:
@@ -24,7 +27,9 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
     volumes:
-       - pgadmin:/root/.pgadmin
+       - ./pgadmin-config.json:/pgadmin-config.json
+       - ./init_pgadmin.py:/docker-entrypoint-initdb.d/init_pgadmin.py
+       - ./pgadmin-setup.sql:/docker-entrypoint-initdb.d/pgadmin-setup.sql
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     networks:

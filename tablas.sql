@@ -1,6 +1,12 @@
+-- Database
+
+CREATE DATABASE data_project;
+
+\c data_project
+
 -- Table: esquema."Solicitudes"
 
-CREATE TABLE esquema."Solicitudes"
+CREATE TABLE Solicitudes
 (
     index bigint,
     "Nombre" text COLLATE pg_catalog."default",
@@ -19,13 +25,13 @@ CREATE TABLE esquema."Solicitudes"
     "Porcentaje de discapacidad" bigint
 );
 
-ALTER TABLE esquema."Solicitudes"
+ALTER TABLE Solicitudes
     OWNER TO postgres;
 
 -- Index: ix_esquema_Solicitudes_index
 
-CREATE INDEX "ix_esquema_Solicitudes_index"
-    ON esquema."Solicitudes" USING btree
+CREATE INDEX ix_esquema_Solicitudes_index
+    ON Solicitudes USING btree
     (index ASC NULLS LAST)
     TABLESPACE pg_default;
 
@@ -35,7 +41,7 @@ CREATE INDEX "ix_esquema_Solicitudes_index"
 
 -- DROP TABLE esquema."DESTINOS";
 
-CREATE TABLE esquema."DESTINOS"
+CREATE TABLE Destinos
 (
     index bigint,
     "Destino" text COLLATE pg_catalog."default",
@@ -45,15 +51,15 @@ CREATE TABLE esquema."DESTINOS"
 
 TABLESPACE pg_default;
 
-ALTER TABLE esquema."DESTINOS"
+ALTER TABLE Destinos
     OWNER to postgres;
 
 -- Index: ix_esquema_DESTINOS_index
 
 -- DROP INDEX esquema."ix_esquema_DESTINOS_index";
 
-CREATE INDEX "ix_esquema_DESTINOS_index"
-    ON esquema."DESTINOS" USING btree
+CREATE INDEX "ix_Destinos_index"
+    ON Destinos USING btree
     (index ASC NULLS LAST)
     TABLESPACE pg_default;
 
@@ -62,7 +68,7 @@ CREATE INDEX "ix_esquema_DESTINOS_index"
 
 -- DROP TABLE esquema."Preferencias";
 
-CREATE TABLE esquema."Preferencias"
+CREATE TABLE Preferencias
 (
     index bigint,
     "índice" bigint,
@@ -75,15 +81,15 @@ CREATE TABLE esquema."Preferencias"
 
 TABLESPACE pg_default;
 
-ALTER TABLE esquema."Preferencias"
+ALTER TABLE Preferencias
     OWNER to postgres;
 
 -- Index: ix_esquema_Preferencias_index
 
 -- DROP INDEX esquema."ix_esquema_Preferencias_index";
 
-CREATE INDEX "ix_esquema_Preferencias_index"
-    ON esquema."Preferencias" USING btree
+CREATE INDEX "ix_Preferencias_index"
+    ON Preferencias USING btree
     (index ASC NULLS LAST)
     TABLESPACE pg_default;
 
