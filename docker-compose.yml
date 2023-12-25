@@ -7,17 +7,13 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Welcome01}
-      PGDATA: /data/postgres
+      POSTGRES_DB: data_project
     volumes:
-       - postgres:/data/postgres
        - ./tablas.sql:/docker-entrypoint-initdb.d/tablas.sql
     ports:
       - "5432:5432"
     networks:
       - postgres
-    build:
-      context: .
-      dockerfile: Dockerfile
     restart: unless-stopped
    
   pgadmin:
@@ -27,9 +23,8 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
     volumes:
-       - ./pgadmin-config.json:/pgadmin-config.json
-       - ./init_pgadmin.py:/docker-entrypoint-initdb.d/init_pgadmin.py
-       - ./pgadmin-setup.sql:/docker-entrypoint-initdb.d/pgadmin-setup.sql
+     - pgadmin:/root/.pgadmin
+     - ./init_pgadmin.sh:/docker-entrypoint-initdb.d/init_pgadmin.sh
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     networks:

@@ -16,7 +16,7 @@ engine = create_engine('postgresql+psycopg2://postgres:Welcome01@127.0.0.1/postg
 postgres_connection = engine.connect()
 with engine.connect() as postgres_connection:
     postgres_connection.execution_options(isolation_level="AUTOCOMMIT")
-    query = text ('CREATE DATABASE data_project')
+    query = text('CREATE DATABASE data_project')
     postgres_connection.execute(query)
 #Cerrar la conexión a la BD 'postgres'
 postgres_connection.close()

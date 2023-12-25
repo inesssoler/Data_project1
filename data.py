@@ -62,6 +62,7 @@ tabla_destino = 'Solicitudes'
 
 # Asegúrate de que el DataFrame tenga el mismo nombre de columnas y en el mismo orden que la tabla
 Solicitudes_df.to_sql(tabla_destino, engine, if_exists='replace', index=False)
+conn.close()
 
 
 ## TABLA DESTINOS/CIUDADES
@@ -97,6 +98,17 @@ for destino in escapada:
 
 destinos_df = pd.DataFrame(destinos_todos)
 destinos_df['indice'] = destinos_df.index
+
+engine = create_engine(f"postgresql://{config['Username']}:{config['Password']}@{config['Host']}:{config['Port']}/{config['Database']}")
+conn = engine.connect()
+
+# Insertar datos en la tabla "Solicitudes"
+tabla_destino = 'Destinos'
+
+# Asegúrate de que el DataFrame tenga el mismo nombre de columnas y en el mismo orden que la tabla
+destinos_df.to_sql(tabla_destino, engine, if_exists='replace', index=False)
+conn.close()
+
 
 ## TABLA TIPO_DESTINO
 

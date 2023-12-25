@@ -1,8 +1,15 @@
 -- Database
+DROP DATABASE IF EXISTS data_project;
 
 CREATE DATABASE data_project;
 
 \c data_project
+
+
+-- Eliminar tablas anteriores
+DROP TABLE IF EXISTS Solicitudes;
+DROP TABLE IF EXISTS Destinos;
+DROP TABLE IF EXISTS Preferencias;
 
 -- Table: esquema."Solicitudes"
 
@@ -30,7 +37,7 @@ ALTER TABLE Solicitudes
 
 -- Index: ix_esquema_Solicitudes_index
 
-CREATE INDEX ix_esquema_Solicitudes_index
+CREATE INDEX ix_Solicitudes_index
     ON Solicitudes USING btree
     (index ASC NULLS LAST)
     TABLESPACE pg_default;
