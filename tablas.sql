@@ -35,7 +35,7 @@ CREATE TABLE esquema."preferencias"
 (
     solicitud_id bigint PRIMARY KEY,
     opcion_n smallint,
-    ciudad text
+    destino text
 );
 
 -- Table: esquema."tipo de destino"

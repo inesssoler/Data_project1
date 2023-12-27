@@ -59,9 +59,6 @@ from sqlalchemy import create_engine, text
 import psycopg2
 import unicodedata
 
-
-# TABLA DESTINOS
-
 destinos_todos=[]
 
 costa_peninsular = ['Benidorm', 'Torrevieja', 'Denia', 'Javea', 'El Albir', 'Calpe', 'Peñiscola', 'Benicassim', 'Vinaros', 'Gandia', 'Alboraya', 'Cullera', 'La Manga', 'Roquetas de Mar', 'Mojacar', 'Almuñecar', 'Matalascañas', 'Punta Umbria', 'Torremolinos', 'Marbella', 'Fuengirola', 'Benalmadena', 'Cadiz', 'Calella', 'Pineda del Mar', 'Santa Susana', 'Lloret de Mar', 'Salou', 'Cambrils', 'Comarruga', 'Finestrat', 'Altea', 'Elche', 'Murcia', 'Los Urrutias', 'Aguadulce', 'Isla Antilla', 'Isla Cristina', 'Isla Canela', 'Estepona', 'Conil De La Frontera', 'Chiclana De La Frontera', 'Puerto De Santa María', 'Chipiona', 'Mataro', 'Malgrat De Mar', 'Tossa De Mar', 'Platja D\'Aro', 'San Carlos de la Rapita', 'La Pineda-Vilaseca', 'Miami Platja']
@@ -72,44 +69,44 @@ escapada = ['Finestrat', 'Madrid', 'San Lorenzo del Escorial', 'Pinto', 'Aranjue
 
 for destino in costa_insular:
     datos = {
-        'Destino': destino,
-        'Tipo de destino': 1
+        'destino': destino,
+        'tipo_destino': 1
     }
     destinos_todos.append(datos)
 
 for destino in costa_peninsular:
     datos = {
-        'Destino': destino,
-        'Tipo de destino': 2
+        'destino': destino,
+        'tipo_destino': 2
     }
     destinos_todos.append(datos)
 
 for destino in escapada:
     datos = {
-        'Destino': destino,
-        'Tipo de destino': 3
+        'destino': destino,
+        'tipo_destino': 3
     }
     destinos_todos.append(datos)
 
 destinos_df = pd.DataFrame(destinos_todos)
 destinos_df['indice'] = destinos_df.index
 
-# TABLA PREFERENCIAS (CAMBIAR)
+# TABLA PREFERENCIAS
 
 # Crear una lista de 1000 personas con índices y destinos aleatorios
 personas = []
 for i in range(1, 1001):
-    opcion1 = random.choice(destinos_df['Destino'])
-    opcion2 = random.choice(destinos_df['Destino'])
-    opcion3 = random.choice(destinos_df['Destino'])
-    opcion4 = random.choice(destinos_df['Destino'])
-    opcion5 = random.choice(destinos_df['Destino'])
-    
-    personas.append([i, opcion1, opcion2, opcion3, opcion4, opcion5])
+    solicitud_id = i
+    for op in range(1, 6):
+        opcion_n = op
+        destino = random.choice(destinos_df['destino'])
+        personas.append([solicitud_id, opcion_n, destino])
 
 # Crear un DataFrame con la lista de personas
-columnas = ['índice', 'Opcion1', 'Opcion2', 'Opcion3', 'Opcion4', 'Opcion5']
+columnas = ['solicitud_id', 'opcion_n', 'destino']
 df_preferencias = pd.DataFrame(personas, columns=columnas)
+
+
 
 # TABLA TDESTINO
 import pandas as pd
@@ -117,17 +114,17 @@ import pandas as pd
 tipos_todos = []
 
 tipo_insular = {
-    'Tipo': 1,
-    'Duracion': '8-10 días'
+    'tipo_destino': 1,
+    'duracion': '8-10 días'
 }
 tipo_peninsular = {
-    'Tipo': 2,
-    'Duracion': '8-10 días'
+    'tipo_destino': 2,
+    'duracion': '8-10 días'
 }
 
 tipo_escapada = {
-    'Tipo': 3,
-    'Duracion': '4-5 días'
+    'tipo_destino': 3,
+    'duracion': '4-5 días'
 }
 
 tipos_todos.append(tipo_insular)
@@ -135,7 +132,6 @@ tipos_todos.append(tipo_peninsular)
 tipos_todos.append(tipo_escapada)
 
 tipo_destinos_df = pd.DataFrame(tipos_todos)
-print(tipo_destinos_df)
 
 # TABLA HOTELES
 
@@ -171,7 +167,6 @@ hoteles =['Alua Bocaccio','Aluasun Continental Park','Aluason Torrenova','Caribb
     'Leon Camino','Olid','Rey Sancho','Gran Hotel Corona Sol','Extremadura Hotel','Ilunion Golf Badajoz','Gran Hotel Corona Sol','Exe Auriense',
     'Exe Coruña','Mendez Nuñez','Ciudad De Compostela','Sancho Ramirez','Barcelo Costa Vasca','Occidental Bilbao','Unzaga Plaza','Ceuta Puerta De Africa','Ciudad De Haro'
 ]
-print(len(hoteles))
 lista_ciudades = [
     'Puerto de Alcudia', 'Playa de Muro', 'Palmanova', 'El Arenal', 'El Arenal', 'El Arenal', 'El Arenal', 'El Arenal',
     'Magaluf', 'Magaluf', 'Cala Rajada', 'Can Pastilla', 'El Arenal', 'Mercadal', 'Mercadal', 'Ciudadela', 'Punta Prima', 'Ciudadela',
@@ -206,11 +201,10 @@ lista_ciudades = [
 ]
 
 hoteles_df = pd.DataFrame()
-hoteles_df['Nombres'] = hoteles
-hoteles_df['Ciudades'] = lista_ciudades
-hoteles_df['indice'] = hoteles_df.index
+hoteles_df['hotel'] = hoteles
+hoteles_df['ciudad'] = lista_ciudades
+hoteles_df['hotel_id'] = hoteles_df.index
 
-print(hoteles_df)
 
 # CONEXION E INSERCIÓN DE LOS DATOS
 
@@ -224,102 +218,91 @@ try:
 
     cursor = connection.cursor()
 
-    # Inserta la tabla solicitudes
+    # Inserta la tabla 'solicitudes'
     for datos in base_de_datos:
         insert_query = """
         INSERT INTO esquema.solicitudes 
         (solicitud_id, nombre, apellidos, edad, provincia_residente, telefono, discapacidad, seguridad_social, soltero_o_viudo, vive_en_residencia, viajara_con_acompanante, imserso_anopasado, imserso_2021, importe_pension, porcentaje_discapacidad)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT DO NOTHING;  -- Evita duplicados
         """
 
-        try:
-            cursor.execute(insert_query, (
-                datos['solicitud_id'],
-                datos['nombre'],
-                datos['apellidos'],
-                datos['edad'],
-                datos['provincia_residente'],
-                datos['telefono'],
-                datos['discapacidad'],
-                datos['seguridad_social'],
-                datos['soltero_o_viudo'],
-                datos['vive_en_residencia'],
-                datos['viajara_con_acompanante'],
-                datos['imserso_anopasado'],
-                datos['imserso_2021'],
-                datos['importe_pension'],
-                datos['porcentaje_discapacidad']
-            ))
-        except Exception as e:
-            print(f"Error during insertion: {e}")
-            print(f"Failed data: {datos}")
+        cursor.execute(insert_query, (
+            datos['solicitud_id'],
+            datos['nombre'],
+            datos['apellidos'],
+            datos['edad'],
+            datos['provincia_residente'],
+            datos['telefono'],
+            datos['discapacidad'],
+            datos['seguridad_social'],
+            datos['soltero_o_viudo'],
+            datos['vive_en_residencia'],
+            datos['viajara_con_acompanante'],
+            datos['imserso_anopasado'],
+            datos['imserso_2021'],
+            datos['importe_pension'],
+            datos['porcentaje_discapacidad']
+        ))
 
-        # Inserta los datos en la tabla 'destinos'
-    for destino in destinos_df:
+    # Inserta la tabla 'destinos'
+    for destino in destinos_df.itertuples(index=False):
         insert_destino_query = """
         INSERT INTO esquema.destinos 
         (index, destino, tipo_destino)
-        VALUES (%s, %s, %s);
+        VALUES (%s, %s, %s)
+        ON CONFLICT DO NOTHING;  -- Evita duplicados
         """
 
         cursor.execute(insert_destino_query, (
-            destino['indice'],
-            destino['Destino'],
-            destino['Tipo de destino']
+            destino.indice,
+            destino.destino,
+            destino.tipo_destino
         ))
 
-        # Itera sobre cada fila del DataFrame 'df_preferencias'
+    # Inserta la tabla 'preferencias'
     for preferencia in df_preferencias.itertuples(index=False):
-        # Define la consulta SQL de inserción para la tabla 'preferencias'
         insert_preferencia_query = """
         INSERT INTO esquema.preferencias 
-        (indice, opcion1, opcion2, opcion3, opcion4, opcion5)
-        VALUES (%s, %s, %s, %s, %s, %s);
+        (solicitud_id, opcion_n, destino)
+        VALUES (%s, %s, %s)
+        ON CONFLICT DO NOTHING;  -- Evita duplicados
         """
 
-                # Ejecuta la consulta SQL de inserción con los valores de la fila actual
         cursor.execute(insert_preferencia_query, (
-            preferencia.indice,
-            preferencia.Opcion1,
-            preferencia.Opcion2,
-            preferencia.Opcion3,
-            preferencia.Opcion4,
-            preferencia.Opcion5
+            preferencia.solicitud_id,
+            preferencia.opcion_n,
+            preferencia.destino
         ))
 
-
-        # Itera sobre cada fila del DataFrame 'tipo_destinos_df'
+    # Inserta la tabla 'tdestino'
     for tipo_destino in tipo_destinos_df.itertuples(index=False):
-        # Define la consulta SQL de inserción para la tabla 'tdestino'
         insert_tdestino_query = """
         INSERT INTO esquema.tdestino 
-        (tipo, duracion)
-        VALUES (%s, %s);
+        (tipo_destino, duracion)
+        VALUES (%s, %s)
+        ON CONFLICT DO NOTHING;  -- Evita duplicados
         """
 
-        # Ejecuta la consulta SQL de inserción con los valores de la fila actual
         cursor.execute(insert_tdestino_query, (
-            tipo_destino.Tipo,
-            tipo_destino.Duracion
+            tipo_destino.tipo_destino,
+            tipo_destino.duracion
         ))
 
-        # Itera sobre cada fila del DataFrame 'hoteles_df'
+    # Inserta la tabla 'hoteles'
     for hotel in hoteles_df.itertuples(index=False):
-        # Define la consulta SQL de inserción para la tabla 'hoteles'
         insert_hoteles_query = """
         INSERT INTO esquema.hoteles 
-        (indice, nombre, ciudad)
-        VALUES (%s, %s, %s);
+        (hotel_id, hotel, ciudad)
+        VALUES (%s, %s, %s)
+        ON CONFLICT DO NOTHING;  -- Evita duplicados
         """
 
-        # Ejecuta la consulta SQL de inserción con los valores de la fila actual
         cursor.execute(insert_hoteles_query, (
-            hotel.indice,
-            hotel.Nombres,
-            hotel.Ciudades
+            hotel.hotel_id,
+            hotel.hotel,
+            hotel.ciudad
         ))
-
-
 
     # Guarda los cambios en la base de datos
     connection.commit()
