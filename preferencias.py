@@ -54,4 +54,4 @@ for i in range(1, 1001):
 
 # Crear un DataFrame con la lista de personas
 columnas = ['índice', 'Opcion1', 'Opcion2', 'Opcion3', 'Opcion4', 'Opcion5']
-df = pd.DataFrame(personas, columns=columnas)
+df_preferencias = pd.DataFrame(personas, columns=columnas)
