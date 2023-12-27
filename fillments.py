@@ -1,4 +1,4 @@
-# TABLA SOLICITUDES
+################################################################## TABLA SOLICITUDES
 
 import json
 import random
@@ -19,7 +19,7 @@ for _ in range(num_registros):
     datos = {
         'solicitud_id': _ + 1,
         'nombre': fake.first_name(),
-        'apellidos': fake.last_name(),
+        'apellidos': fake.last_name() + ' ' + fake.last_name(),
         'edad': random.randint(60, 99),
         'provincia_residente': fake.state(),
         'telefono': fake.phone_number(),
@@ -43,13 +43,7 @@ for _ in range(num_registros):
 # Crea un DataFrame a partir de la lista
 df = pd.DataFrame(base_de_datos)
 
-# Guarda la base de datos en un JSON con codificación utf-8 y ensure_ascii=False, facilitando las tildes e imprimiéndolo por pantalla
-with open('base_de_datos.json', 'w', encoding='utf-8') as archivo:
-    json.dump(base_de_datos, archivo, indent=2, ensure_ascii=False)
-
-print("Base de datos generada y guardada en 'base_de_datos.json'")
-
-#TABLA 'DESTINOS'
+######################################################################## TABLA 'DESTINOS'
 
 import json
 import random
@@ -91,7 +85,8 @@ for destino in escapada:
 destinos_df = pd.DataFrame(destinos_todos)
 destinos_df['indice'] = destinos_df.index
 
-# TABLA PREFERENCIAS
+
+################################################################################## TABLA PREFERENCIAS
 
 # Crear una lista de 1000 personas con índices y destinos aleatorios
 personas = []
@@ -108,7 +103,7 @@ df_preferencias = pd.DataFrame(personas, columns=columnas)
 
 
 
-# TABLA TDESTINO
+################################################################################# TABLA TDESTINO
 import pandas as pd
 
 tipos_todos = []
@@ -133,7 +128,7 @@ tipos_todos.append(tipo_escapada)
 
 tipo_destinos_df = pd.DataFrame(tipos_todos)
 
-# TABLA HOTELES
+######################################################################## TABLA HOTELES
 
 import pandas as pd
 
@@ -206,7 +201,7 @@ hoteles_df['ciudad'] = lista_ciudades
 hoteles_df['hotel_id'] = hoteles_df.index
 
 
-# CONEXION E INSERCIÓN DE LOS DATOS
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  CONEXION E INSERCIÓN DE LOS DATOS
 
 try:
     connection = psycopg2.connect(
@@ -249,7 +244,7 @@ try:
     for destino in destinos_df.itertuples(index=False):
         insert_destino_query = """
         INSERT INTO esquema.destinos 
-        (index, destino, tipo_destino)
+        (indice, destino, tipo_destino)
         VALUES (%s, %s, %s)
         ON CONFLICT DO NOTHING;  -- Evita duplicados
         """

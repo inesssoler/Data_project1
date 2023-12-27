@@ -24,16 +24,15 @@ CREATE TABLE esquema."solicitudes"
 -- Table: esquema."destinos"
 CREATE TABLE esquema."destinos"
 (
-    index bigint,
+    indice bigint,
     destino text,
-    tipo_destino smallint,
-    CONSTRAINT destinos_pkey PRIMARY KEY (tipo_destino)
+    tipo_destino smallint
 );
 
 -- Table: esquema."preferencias"
 CREATE TABLE esquema."preferencias"
 (
-    solicitud_id bigint PRIMARY KEY,
+    solicitud_id bigint,
     opcion_n smallint,
     destino text
 );
