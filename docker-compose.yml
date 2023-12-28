@@ -15,9 +15,17 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-   
+
+  python:
+    container_name: python_container
+    image: python:3.9
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+
 networks:
   postgres:
- 
-volumes:
-    postgres:
+
+
+    
