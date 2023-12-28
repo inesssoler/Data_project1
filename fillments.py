@@ -1,10 +1,5 @@
 ################################################################## TABLA SOLICITUDES
-
-import json
-import random
-from faker import Faker
 import pandas as pd
-import psycopg2
 
 # Adapta la librería 'Faker' al español castellano con nombres en dicho idioma
 fake = Faker('es_ES')
@@ -45,13 +40,6 @@ df = pd.DataFrame(base_de_datos)
 
 ######################################################################## TABLA 'DESTINOS'
 
-import json
-import random
-from faker import Faker
-import pandas as pd
-from sqlalchemy import create_engine, text 
-import psycopg2
-import unicodedata
 
 destinos_todos=[]
 
@@ -104,7 +92,6 @@ df_preferencias = pd.DataFrame(personas, columns=columnas)
 
 
 ################################################################################# TABLA TDESTINO
-import pandas as pd
 
 tipos_todos = []
 
@@ -129,8 +116,6 @@ tipos_todos.append(tipo_escapada)
 tipo_destinos_df = pd.DataFrame(tipos_todos)
 
 ######################################################################## TABLA HOTELES
-
-import pandas as pd
 
 hoteles =['Alua Bocaccio','Aluasun Continental Park','Aluason Torrenova','Caribbean Bay','Habana Bay','Linda','Mediterranean Bay','Palma Bay',
     'Ritort','Samos','Atlantic Park','Triton beach','Linda','Mll Mediterranean Bay Adults Only','Aguamarina I','Aguamarina II',
