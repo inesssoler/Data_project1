@@ -1,8 +1,5 @@
--- Create esquema
-CREATE SCHEMA IF NOT EXISTS esquema;
-
--- Table: esquema."Solicitudes"
-CREATE TABLE esquema."solicitudes"
+-- Table: "Solicitudes"
+CREATE TABLE "solicitudes"
 (
     solicitud_id bigint PRIMARY KEY,
     nombre varchar(50),
@@ -21,34 +18,59 @@ CREATE TABLE esquema."solicitudes"
     porcentaje_discapacidad smallint
 );
 
--- Table: esquema."destinos"
-CREATE TABLE esquema."destinos"
+-- Table: "destinos"
+CREATE TABLE "destinos"
 (
-    index bigint,
-    destino text,
-    tipo_destino smallint,
-    CONSTRAINT destinos_pkey PRIMARY KEY (tipo_destino)
-);
-
--- Table: esquema."preferencias"
-CREATE TABLE esquema."preferencias"
-(
-    solicitud_id bigint PRIMARY KEY,
-    opcion_n smallint,
-    destino text
-);
-
--- Table: esquema."tipo de destino"
-CREATE TABLE esquema."tdestino"
-(
-    tipo_destino smallint PRIMARY KEY,
+    tipo_destino_id smallint PRIMARY KEY,
+    tipo_destino text,
     duracion text
 );
 
--- Table: esquema."hoteles"
-CREATE TABLE esquema."hoteles"
+-- Table: "ciudades"
+CREATE TABLE "ciudades"
+(
+    ciudades_id bigint PRIMARY KEY,
+    ciudad text,
+    tipo_destino_id smallint,
+    CONSTRAINT fk_tipo_destino
+    FOREIGN KEY (tipo_destino_id)
+    REFERENCES destinos(tipo_destino_id)
+);
+
+
+-- Table: "preferencias"
+CREATE TABLE "preferencias"
+(
+    preferencias_id bigint PRIMARY KEY,
+    opcion_1 text,
+    opcion_2 text,
+    opcion_3 text,
+    opcion_4 text,
+    opcion_5 text,
+    opcion_id_1 bigint,
+    opcion_id_2 bigint,
+    opcion_id_3 bigint,
+    opcion_id_4 bigint,
+    opcion_id_5 bigint,
+    solicitud_id bigint,
+    FOREIGN KEY (opcion_id_1) REFERENCES ciudades(ciudades_id),
+    FOREIGN KEY (opcion_id_2) REFERENCES ciudades(ciudades_id),
+    FOREIGN KEY (opcion_id_3) REFERENCES ciudades(ciudades_id),
+    FOREIGN KEY (opcion_id_4) REFERENCES ciudades(ciudades_id),
+    FOREIGN KEY (opcion_id_5) REFERENCES ciudades(ciudades_id),
+    FOREIGN KEY (solicitud_id) REFERENCES solicitudes(solicitud_id)
+);
+
+
+-- Table: "hoteles"
+CREATE TABLE "hoteles"
 (
     hotel_id bigint PRIMARY KEY,
+    hotel text,
     ciudad text,
-    hotel text
+    ciudades_id bigint,
+    CONSTRAINT fk_ciudad
+    FOREIGN KEY (ciudades_id)
+    REFERENCES ciudades(ciudades_id)
 );
+
