@@ -15,7 +15,7 @@ connection_params = {
     'port': '5432'
 }
 
-engine = create_engine('postgresql+psycopg2://%(user)s:%(password)s@%(host)s:%(port)s/%(dbname)s' % connection_params)
+engine = create_engine('postgresql+psycopg2://%(postgres)s:%(Welcome01)s@%(localhost)s:%(5432)s/%(data_project1)s' % connection_params)
 
 solicitudes_df = pd.read_sql('SELECT * FROM esquema.solicitudes', con=engine)
 destinos_df = pd.read_sql('SELECT * FROM esquema.destinos', con=engine)
