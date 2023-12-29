@@ -1,5 +1,8 @@
 ################################################################## TABLA SOLICITUDES
 import pandas as pd
+import random
+import psycopg2
+from faker import Faker
 
 # Adapta la librería 'Faker' al español castellano con nombres en dicho idioma
 fake = Faker('es_ES')
@@ -21,6 +24,7 @@ for _ in range(num_registros):
         'discapacidad': fake.boolean(),
         'seguridad_social': fake.ssn(),
         'soltero_o_viudo': fake.boolean(),
+        'accesotransp': fake.boolean(),
         'vive_en_residencia': fake.boolean(),
         'viajara_con_acompanante': fake.boolean(),
         'imserso_anopasado': fake.boolean(),
@@ -28,9 +32,9 @@ for _ in range(num_registros):
         'importe_pension': round(random.uniform(480, 3000))
     }
     if datos['discapacidad'] == True:
-        datos['porcentaje_discapacidad'] = round(random.uniform(1, 85))
+       datos['porcentaje_discapacidad'] = round(random.uniform(1, 85))
     else:
-        datos['porcentaje_discapacidad'] = 0
+       datos['porcentaje_discapacidad'] = 0
     
     # Añade los registros a la lista
     base_de_datos.append(datos)
@@ -39,7 +43,6 @@ for _ in range(num_registros):
 df = pd.DataFrame(base_de_datos)
 
 ######################################################################## TABLA 'DESTINOS'
-
 
 destinos_todos=[]
 
@@ -73,12 +76,11 @@ for destino in escapada:
 destinos_df = pd.DataFrame(destinos_todos)
 destinos_df['indice'] = destinos_df.index
 
-
 ################################################################################## TABLA PREFERENCIAS
 
-# Crear una lista de 1000 personas con índices y destinos aleatorios
+# Crear una lista de 10000 personas con índices y destinos aleatorios
 personas = []
-for i in range(1, 1001):
+for i in range(1, 10001):
     solicitud_id = i
     for op in range(1, 6):
         opcion_n = op
@@ -88,8 +90,6 @@ for i in range(1, 1001):
 # Crear un DataFrame con la lista de personas
 columnas = ['solicitud_id', 'opcion_n', 'destino']
 df_preferencias = pd.DataFrame(personas, columns=columnas)
-
-
 
 ################################################################################# TABLA TDESTINO
 
@@ -185,8 +185,7 @@ hoteles_df['hotel'] = hoteles
 hoteles_df['ciudad'] = lista_ciudades
 hoteles_df['hotel_id'] = hoteles_df.index
 
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  CONEXION E INSERCIÓN DE LOS DATOS
+####################################  CONEXION E INSERCIÓN DE LOS DATOS
 
 try:
     connection = psycopg2.connect(
