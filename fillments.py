@@ -1,8 +1,10 @@
-################################################################## TABLA SOLICITUDES
-import pandas as pd
+# TABLA SOLICITUDES
+
+import json
 import random
-import psycopg2
 from faker import Faker
+import pandas as pd
+import psycopg2
 
 # Adapta la librería 'Faker' al español castellano con nombres en dicho idioma
 fake = Faker('es_ES')
@@ -17,14 +19,13 @@ for _ in range(num_registros):
     datos = {
         'solicitud_id': _ + 1,
         'nombre': fake.first_name(),
-        'apellidos': fake.last_name() + ' ' + fake.last_name(),
+        'apellidos': fake.last_name(),
         'edad': random.randint(60, 99),
         'provincia_residente': fake.state(),
         'telefono': fake.phone_number(),
         'discapacidad': fake.boolean(),
         'seguridad_social': fake.ssn(),
         'soltero_o_viudo': fake.boolean(),
-        'accesotransp': fake.boolean(),
         'vive_en_residencia': fake.boolean(),
         'viajara_con_acompanante': fake.boolean(),
         'imserso_anopasado': fake.boolean(),
@@ -32,9 +33,9 @@ for _ in range(num_registros):
         'importe_pension': round(random.uniform(480, 3000))
     }
     if datos['discapacidad'] == True:
-       datos['porcentaje_discapacidad'] = round(random.uniform(1, 85))
+        datos['porcentaje_discapacidad'] = round(random.uniform(1, 85))
     else:
-       datos['porcentaje_discapacidad'] = 0
+        datos['porcentaje_discapacidad'] = 0
     
     # Añade los registros a la lista
     base_de_datos.append(datos)
@@ -42,70 +43,30 @@ for _ in range(num_registros):
 # Crea un DataFrame a partir de la lista
 df = pd.DataFrame(base_de_datos)
 
-######################################################################## TABLA 'DESTINOS'
+# Guarda la base de datos en un JSON con codificación utf-8 y ensure_ascii=False, facilitando las tildes e imprimiéndolo por pantalla
+with open('base_de_datos.json', 'w', encoding='utf-8') as archivo:
+    json.dump(base_de_datos, archivo, indent=2, ensure_ascii=False)
 
-destinos_todos=[]
+print("Base de datos generada y guardada en 'base_de_datos.json'")
 
-costa_peninsular = ['Benidorm', 'Torrevieja', 'Denia', 'Javea', 'El Albir', 'Calpe', 'Peñiscola', 'Benicassim', 'Vinaros', 'Gandia', 'Alboraya', 'Cullera', 'La Manga', 'Roquetas de Mar', 'Mojacar', 'Almuñecar', 'Matalascañas', 'Punta Umbria', 'Torremolinos', 'Marbella', 'Fuengirola', 'Benalmadena', 'Cadiz', 'Calella', 'Pineda del Mar', 'Santa Susana', 'Lloret de Mar', 'Salou', 'Cambrils', 'Comarruga', 'Finestrat', 'Altea', 'Elche', 'Murcia', 'Los Urrutias', 'Aguadulce', 'Isla Antilla', 'Isla Cristina', 'Isla Canela', 'Estepona', 'Conil De La Frontera', 'Chiclana De La Frontera', 'Puerto De Santa María', 'Chipiona', 'Mataro', 'Malgrat De Mar', 'Tossa De Mar', 'Platja D\'Aro', 'San Carlos de la Rapita', 'La Pineda-Vilaseca', 'Miami Platja']
 
-costa_insular = ['Puerto de Alcudia', 'Playa de Muro', 'Palmanova', 'El Arenal', 'Magaluf', 'Cala Rajada', 'Mercadal', 'Ciudadela', 'Punta Prima', 'Santa Eulalia', 'Es Canar', 'San Antonio', 'San Carlos', 'Santa Eulalia', 'Puerto Rico', 'Las Palmas D.G.C.', 'Playa Del Inglés', 'Maspalomas', 'Costa Teguise', 'Puerto de la Cruz', 'Las Caletillas', 'Los Realejos', 'San Miguel De Abona', 'Costa Calma', 'Caleta De Fuste', 'Pajara', 'Fuerteventura']
-
-escapada = ['Finestrat', 'Madrid', 'San Lorenzo del Escorial', 'Pinto', 'Aranjuez', 'Huesca', 'Teruel', 'Zaragoza', 'Oviedo', 'Gijon', 'Agua Dulce', 'San Carlos de la Repita', 'Cabuerniga', 'Ciudad Real', 'Cuenca', 'Guadalajara', 'Toledo', 'Albacete', 'Avila', 'Burgos', 'Zamora', 'Soria', 'Segovia', 'Salamanca', 'Leon', 'Valladolid', 'Palencia', 'Suances', 'Torre La Vega', 'Santander', 'Santoña', 'Can Pastilla', 'Las Palmas D.G.C.', 'Almería', 'Granada', 'Mijas', 'Jerez', 'Jaén', 'Córdoba', 'Sevilla', 'Barcelona', 'Girona', 'Tarragona', 'Reus', 'Alicante', 'Valencia', 'Murcia', 'Talavera De La Reina', 'Zamora', 'Soria', 'Segovia', 'León', 'Valladolid', 'Palencia', 'Salamanca', 'Cáceres', 'Badajoz', 'Mérida', 'Orense', 'La Coruña', 'Lugo', 'Santiago De Compostela', 'Pamplona', 'San Sebastián', 'Bilbao', 'Eibar', 'Ceuta', 'Haro']
-
-for destino in costa_insular:
-    datos = {
-        'destino': destino,
-        'tipo_destino': 1
-    }
-    destinos_todos.append(datos)
-
-for destino in costa_peninsular:
-    datos = {
-        'destino': destino,
-        'tipo_destino': 2
-    }
-    destinos_todos.append(datos)
-
-for destino in escapada:
-    datos = {
-        'destino': destino,
-        'tipo_destino': 3
-    }
-    destinos_todos.append(datos)
-
-destinos_df = pd.DataFrame(destinos_todos)
-destinos_df['indice'] = destinos_df.index
-
-################################################################################## TABLA PREFERENCIAS
-
-# Crear una lista de 10000 personas con índices y destinos aleatorios
-personas = []
-for i in range(1, 10001):
-    solicitud_id = i
-    for op in range(1, 6):
-        opcion_n = op
-        destino = random.choice(destinos_df['destino'])
-        personas.append([solicitud_id, opcion_n, destino])
-
-# Crear un DataFrame con la lista de personas
-columnas = ['solicitud_id', 'opcion_n', 'destino']
-df_preferencias = pd.DataFrame(personas, columns=columnas)
-
-################################################################################# TABLA TDESTINO
-
+#Tabla 'destinos'
 tipos_todos = []
 
 tipo_insular = {
-    'tipo_destino': 1,
+    'tipo_destino_id': 1,
+    'tipo_destino': 'Costa Insular',
     'duracion': '8-10 días'
 }
 tipo_peninsular = {
-    'tipo_destino': 2,
+    'tipo_destino_id': 2,
+    'tipo_destino': 'Costa Peninsular',
     'duracion': '8-10 días'
 }
 
 tipo_escapada = {
-    'tipo_destino': 3,
+    'tipo_destino_id': 3,
+    'tipo_destino': 'Turismo de Escapada',
     'duracion': '4-5 días'
 }
 
@@ -115,7 +76,87 @@ tipos_todos.append(tipo_escapada)
 
 tipo_destinos_df = pd.DataFrame(tipos_todos)
 
-######################################################################## TABLA HOTELES
+
+
+
+#TABLA 'ciudades'
+
+import json
+import random
+from faker import Faker
+import pandas as pd
+from sqlalchemy import create_engine, text 
+import psycopg2
+import unicodedata
+
+ciudades_todas=[]
+
+costa_peninsular = ['Benidorm', 'Torrevieja', 'Denia', 'Jávea', 'El Albir', 'Calpe', 'Peñíscola', 'Benicassim', 'Vinaros', 'Gandía', 'Alboraya', 'Cullera', 'La Manga', 'Roquetas del Mar', 'Mojacar', 'Almuñécar', 'Matalascañas', 'Punta Umbría', 'Torremolinos', 'Marbella', 'Fuengirola', 'Benalmádena', 'Cadiz', 'Calella', 'Pineda del Mar', 'Santa Susana', 'Lloret del Mar', 'Salou', 'Cambrils', 'Comarruga', 'Finestrat', 'Altea', 'Elche', 'Murcia', 'Los Urrutias', 'Aguadulce', 'Isla Antilla', 'Isla Cristina', 'Isla Canela', 'Estepona', 'Conil De La Frontera', 'Chiclana De La Frontera', 'Puerto De Santa María', 'Chipiona', 'Mataro', 'Malgrat De Mar', 'Tossa De Mar', 'Platja DAro', 'San Carlos de la Rapita', 'La Pineda-Vilaseca', 'Miami Platja']
+
+costa_insular = ['Puerto de Alcudia', 'Playa de Muro', 'Palmanova', 'El Arenal', 'Magaluf', 'Cala Rajada', 'Mercadal', 'Ciudadela', 'Punta Prima', 'Santa Eulalia', 'Es Canar', 'San Antonio', 'San Carlos', 'Puerto Rico', 'Las Palmas D.G.C.', 'Playa Del Inglés', 'Maspalomas', 'Costa Teguise', 'Puerto de la Cruz', 'Las Caletillas', 'Los Realejos', 'San Miguel De Abona', 'Costa Calma', 'Caleta De Fuste', 'Pajara', 'Fuerteventura']
+
+escapada = ['Madrid', 'San Lorenzo del Escorial', 'Pinto', 'Aranjuez', 'Huesca', 'Teruel', 'Zaragoza', 'Oviedo', 'Gijón', 'Cabuérniga', 'Ciudad Real', 'Cuenca', 'Guadalajara', 'Toledo', 'Albacete', 'Ávila', 'Burgos', 'Zamora', 'Soria', 'Segovia', 'Salamanca', 'Valladolid', 'Palencia', 'Suances', 'Torrelavega', 'Santander', 'Santoña', 'Can Pastilla', 'Almería', 'Granada', 'Mijas', 'Jerez', 'Jaén', 'Córdoba', 'Sevilla', 'Barcelona', 'Girona', 'Tarragona', 'Reus', 'Alicante', 'Valencia', 'Talavera De La Reina', 'León', 'Cáceres', 'Badajoz', 'Mérida', 'Orense', 'La Coruña', 'Lugo', 'Santiago De Compostela', 'Pamplona', 'San Sebastián', 'Bilbao', 'Eibar', 'Ceuta', 'Haro']
+
+for ciudad in costa_insular:
+    datos = {
+        'ciudad': ciudad,
+        'tipo_destino_id': 1
+    }
+    ciudades_todas.append(datos)
+
+for ciudad in costa_peninsular:
+    datos = {
+        'ciudad': ciudad,
+        'tipo_destino_id': 2
+    }
+    ciudades_todas.append(datos)
+
+for ciudad in escapada:
+    datos = {
+        'ciudad': ciudad,
+        'tipo_destino_id': 3
+    }
+    ciudades_todas.append(datos)
+
+ciudades_df = pd.DataFrame(ciudades_todas)
+ciudades_df['ciudades_id'] = ciudades_df.index
+
+# TABLA PREFERENCIAS
+
+'''
+personas = []
+for i in range(1, 1001):
+    preferencias_id = i
+    opciones = random.sample(list(ciudades_df['ciudad']), 5)
+    personas.append([preferencias_id] + opciones)
+
+columnas = ['preferencias_id', 'opcion_1', 'opcion_2', 'opcion_3', 'opcion_4', 'opcion_5']
+df_preferencias = pd.DataFrame(personas, columns=columnas)
+
+df_preferencias['solicitud_id'] = df_preferencias.index + 1
+'''
+
+personas = []
+for i in range(1, 1001):
+    preferencias_id = i
+    ciudades_indices = random.sample(ciudades_df.index.tolist(), 5)
+    ciudades_nombres = [ciudades_df.loc[idx, 'ciudad'] for idx in ciudades_indices]
+    personas.append([preferencias_id] + ciudades_indices + ciudades_nombres)
+
+# Crear un DataFrame con la lista de personas y los índices de ciudades
+columnas = ['preferencias_id', 'ciudades_id_1', 'ciudades_id_2', 'ciudades_id_3', 'ciudades_id_4', 'ciudades_id_5',
+            'ciudad_1', 'ciudad_2', 'ciudad_3', 'ciudad_4', 'ciudad_5']
+df_preferencias = pd.DataFrame(personas, columns=columnas)
+
+
+# Agregar la columna 'solicitud_id' con identificador único para cada solicitud
+df_preferencias['solicitud_id'] = df_preferencias.index + 1
+
+
+
+# TABLA HOTELES
+
+import pandas as pd
 
 hoteles =['Alua Bocaccio','Aluasun Continental Park','Aluason Torrenova','Caribbean Bay','Habana Bay','Linda','Mediterranean Bay','Palma Bay',
     'Ritort','Samos','Atlantic Park','Triton beach','Linda','Mll Mediterranean Bay Adults Only','Aguamarina I','Aguamarina II',
@@ -147,8 +188,7 @@ hoteles =['Alua Bocaccio','Aluasun Continental Park','Aluason Torrenova','Caribb
     'Leon Camino','Olid','Rey Sancho','Gran Hotel Corona Sol','Extremadura Hotel','Ilunion Golf Badajoz','Gran Hotel Corona Sol','Exe Auriense',
     'Exe Coruña','Mendez Nuñez','Ciudad De Compostela','Sancho Ramirez','Barcelo Costa Vasca','Occidental Bilbao','Unzaga Plaza','Ceuta Puerta De Africa','Ciudad De Haro'
 ]
-lista_ciudades = [
-    'Puerto de Alcudia', 'Playa de Muro', 'Palmanova', 'El Arenal', 'El Arenal', 'El Arenal', 'El Arenal', 'El Arenal',
+lista_ciudades = ['Puerto de Alcudia', 'Playa de Muro', 'Palmanova', 'El Arenal', 'El Arenal', 'El Arenal', 'El Arenal', 'El Arenal',
     'Magaluf', 'Magaluf', 'Cala Rajada', 'Can Pastilla', 'El Arenal', 'Mercadal', 'Mercadal', 'Ciudadela', 'Punta Prima', 'Ciudadela',
     'Santa Eulalia', 'Es Canar', 'Es Canar', 'San Antonio', 'San Carlos', 'Santa Eulalia', 'Puerto Rico', 'Puerto Rico',
     'Las Palmas D.G.C.', 'Las Palmas D.G.C.', 'Playa Del Inglés', 'Maspalomas', 'Las Palmas D.G.C.', 'Costa Teguise',
@@ -156,7 +196,7 @@ lista_ciudades = [
     'Puerto de la Cruz', 'Puerto de la Cruz', 'Puerto de la Cruz', 'Puerto de la Cruz', 'Las Caletillas', 'Los Realejos',
     'San Miguel De Abona', 'Costa Calma', 'Caleta De Fuste', 'Pajara', 'Fuerteventura', 'Roquetas del Mar',
     'Roquetas del Mar', 'Roquetas del Mar', 'Roquetas del Mar', 'Roquetas del Mar', 'Mojacar', 'Aguadulce', 'Aguadulce',
-    'Almeria', 'Almuñécar', 'Almuñécar', 'Granada', 'Matalascañas', 'Matalascañas', 'Matalascañas', 'Punta Umbría',
+    'Almería', 'Almuñécar', 'Almuñécar', 'Granada', 'Matalascañas', 'Matalascañas', 'Matalascañas', 'Punta Umbría',
     'Isla Antilla', 'Isla Cristina', 'Isla Canela', 'Torremolinos', 'Torremolinos', 'Torremolinos', 'Torremolinos',
     'Torremolinos', 'Marbella', 'Fuengirola', 'Fuengirola', 'Benalmádena', 'Benalmádena', 'Estepona', 'Mijas',
     'Conil De La Frontera', 'Chiclana De La Frontera', 'Cadiz', 'Puerto De Santa María', 'Chipiona', 'Jerez', 'Jaén',
@@ -185,7 +225,21 @@ hoteles_df['hotel'] = hoteles
 hoteles_df['ciudad'] = lista_ciudades
 hoteles_df['hotel_id'] = hoteles_df.index
 
-####################################  CONEXION E INSERCIÓN DE LOS DATOS
+hoteles_df['ciudades_id'] = 0  # Inicializa la columna ciudades_id
+
+# Iterar sobre cada fila en hoteles_df para asignar el ciudades_id correspondiente
+for index, row in hoteles_df.iterrows():
+    ciudad_actual = row['ciudad']
+    
+    # Buscar el ciudades_id correspondiente en ciudades_df según el nombre de la ciudad
+    ciudades_id = ciudades_df.loc[ciudades_df['ciudad'] == ciudad_actual, 'ciudades_id'].values
+    
+    # Asignar el ciudades_id encontrado a la fila correspondiente en hoteles_df
+    if len(ciudades_id) > 0:
+        hoteles_df.at[index, 'ciudades_id'] = ciudades_id[0]
+
+print('Bien')
+# CONEXION E INSERCIÓN DE LOS DATOS
 
 try:
     connection = psycopg2.connect(
@@ -200,7 +254,7 @@ try:
     # Inserta la tabla 'solicitudes'
     for datos in base_de_datos:
         insert_query = """
-        INSERT INTO esquema.solicitudes 
+        INSERT INTO solicitudes 
         (solicitud_id, nombre, apellidos, edad, provincia_residente, telefono, discapacidad, seguridad_social, soltero_o_viudo, vive_en_residencia, viajara_con_acompanante, imserso_anopasado, imserso_2021, importe_pension, porcentaje_discapacidad)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         ON CONFLICT DO NOTHING;  -- Evita duplicados
@@ -225,62 +279,77 @@ try:
         ))
 
     # Inserta la tabla 'destinos'
-    for destino in destinos_df.itertuples(index=False):
-        insert_destino_query = """
-        INSERT INTO esquema.destinos 
-        (indice, destino, tipo_destino)
+    for destinos in tipo_destinos_df.itertuples(index=False):
+        insert_destinos_query = """
+        INSERT INTO destinos 
+        (tipo_destino_id, tipo_destino, duracion)
         VALUES (%s, %s, %s)
         ON CONFLICT DO NOTHING;  -- Evita duplicados
         """
 
-        cursor.execute(insert_destino_query, (
-            destino.indice,
-            destino.destino,
-            destino.tipo_destino
+        cursor.execute(insert_destinos_query, (
+            destinos.tipo_destino_id,
+            destinos.tipo_destino,
+            destinos.duracion
         ))
+
+    # Inserta la tabla 'ciudades'
+    for ciudades in ciudades_df.itertuples(index=False):
+        insert_ciudades_query = """
+        INSERT INTO ciudades 
+        (ciudades_id, ciudad, tipo_destino_id)
+        VALUES (%s, %s, %s)
+        ON CONFLICT DO NOTHING;  -- Evita duplicados
+        """
+
+        cursor.execute(insert_ciudades_query, (
+            ciudades.ciudades_id,
+            ciudades.ciudad,
+            ciudades.tipo_destino_id
+        ))
+
 
     # Inserta la tabla 'preferencias'
     for preferencia in df_preferencias.itertuples(index=False):
         insert_preferencia_query = """
-        INSERT INTO esquema.preferencias 
-        (solicitud_id, opcion_n, destino)
-        VALUES (%s, %s, %s)
+        INSERT INTO preferencias 
+        (preferencias_id, opcion_1, opcion_2, opcion_3, opcion_4, opcion_5,
+        opcion_id_1, opcion_id_2, opcion_id_3, opcion_id_4, opcion_id_5, solicitud_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         ON CONFLICT DO NOTHING;  -- Evita duplicados
         """
 
         cursor.execute(insert_preferencia_query, (
-            preferencia.solicitud_id,
-            preferencia.opcion_n,
-            preferencia.destino
+            preferencia.preferencias_id,
+            preferencia.ciudad_1,
+            preferencia.ciudad_2,
+            preferencia.ciudad_3,
+            preferencia.ciudad_4,
+            preferencia.ciudad_5,
+            preferencia.ciudades_id_1,
+            preferencia.ciudades_id_2,
+            preferencia.ciudades_id_3,
+            preferencia.ciudades_id_4,
+            preferencia.ciudades_id_5,
+            preferencia.solicitud_id
         ))
 
-    # Inserta la tabla 'tdestino'
-    for tipo_destino in tipo_destinos_df.itertuples(index=False):
-        insert_tdestino_query = """
-        INSERT INTO esquema.tdestino 
-        (tipo_destino, duracion)
-        VALUES (%s, %s)
-        ON CONFLICT DO NOTHING;  -- Evita duplicados
-        """
 
-        cursor.execute(insert_tdestino_query, (
-            tipo_destino.tipo_destino,
-            tipo_destino.duracion
-        ))
 
     # Inserta la tabla 'hoteles'
     for hotel in hoteles_df.itertuples(index=False):
         insert_hoteles_query = """
-        INSERT INTO esquema.hoteles 
-        (hotel_id, hotel, ciudad)
-        VALUES (%s, %s, %s)
+        INSERT INTO hoteles 
+        (hotel_id, hotel, ciudad, ciudades_id)
+        VALUES (%s, %s, %s, %s)
         ON CONFLICT DO NOTHING;  -- Evita duplicados
         """
 
         cursor.execute(insert_hoteles_query, (
             hotel.hotel_id,
             hotel.hotel,
-            hotel.ciudad
+            hotel.ciudad,
+            hotel.ciudades_id
         ))
 
     # Guarda los cambios en la base de datos
