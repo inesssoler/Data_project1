@@ -123,19 +123,6 @@ ciudades_df['ciudades_id'] = ciudades_df.index
 
 # TABLA PREFERENCIAS
 
-'''
-personas = []
-for i in range(1, 1001):
-    preferencias_id = i
-    opciones = random.sample(list(ciudades_df['ciudad']), 5)
-    personas.append([preferencias_id] + opciones)
-
-columnas = ['preferencias_id', 'opcion_1', 'opcion_2', 'opcion_3', 'opcion_4', 'opcion_5']
-df_preferencias = pd.DataFrame(personas, columns=columnas)
-
-df_preferencias['solicitud_id'] = df_preferencias.index + 1
-'''
-
 personas = []
 for i in range(1, 1001):
     preferencias_id = i
@@ -144,8 +131,8 @@ for i in range(1, 1001):
     personas.append([preferencias_id] + ciudades_indices + ciudades_nombres)
 
 # Crear un DataFrame con la lista de personas y los índices de ciudades
-columnas = ['preferencias_id', 'ciudades_id_1', 'ciudades_id_2', 'ciudades_id_3', 'ciudades_id_4', 'ciudades_id_5',
-            'ciudad_1', 'ciudad_2', 'ciudad_3', 'ciudad_4', 'ciudad_5']
+columnas = ['preferencias_id', 'opcion_id_1', 'opcion_id_2', 'opcion_id_3', 'opcion_id_4', 'opcion_id_5',
+            'opcion_1', 'opcion_2', 'opcion_3', 'opcion_4', 'opcion_5']
 df_preferencias = pd.DataFrame(personas, columns=columnas)
 
 
@@ -321,19 +308,18 @@ try:
 
         cursor.execute(insert_preferencia_query, (
             preferencia.preferencias_id,
-            preferencia.ciudad_1,
-            preferencia.ciudad_2,
-            preferencia.ciudad_3,
-            preferencia.ciudad_4,
-            preferencia.ciudad_5,
-            preferencia.ciudades_id_1,
-            preferencia.ciudades_id_2,
-            preferencia.ciudades_id_3,
-            preferencia.ciudades_id_4,
-            preferencia.ciudades_id_5,
+            preferencia.opcion_1,
+            preferencia.opcion_2,
+            preferencia.opcion_3,
+            preferencia.opcion_4,
+            preferencia.opcion_5,
+            preferencia.opcion_id_1,
+            preferencia.opcion_id_2,
+            preferencia.opcion_id_3,
+            preferencia.opcion_id_4,
+            preferencia.opcion_id_5,
             preferencia.solicitud_id
         ))
-
 
 
     # Inserta la tabla 'hoteles'
